@@ -2,16 +2,16 @@
 
 Material e información sobre la cámara IP [NewVision DC74](https://www.newvision.com.ar/producto/camara-seguridad-ip-wifi-inalambrica-mini-newvision/) ([Anyka AK3918 V200](https://monitor.espec.ws/files/700cafec77419c2d7705f376c974b8d0ff72_986.pdf) - [V380](https://v380.org/))
 
-
-
 ## Servicios disponibles:
 
 ### RTSP
 
-- Video h264 640x360 20 fps: `rtsp://X.X.X.X/live/ch00_0`
-- Video h264 1280x720 20 fps: `rtsp://X.X.X.X/live/ch00_1`
+Proporciona dos streams de video en el puerto 554/TCP:
 
-Por ejemplo para ver el stream de video HD en ffmpeg:
+- Video SD (H.264 640x360 20 fps): `rtsp://X.X.X.X/live/ch00_0`
+- Video HD (H.264 1280x720 20 fps): `rtsp://X.X.X.X/live/ch00_1`
+
+Por ejemplo para ver el stream de video HD usando FFmpeg:
 
 ```bash
 ffplay -rtsp_transport tcp rtsp://X.X.X.X/live/ch00_1
@@ -19,41 +19,17 @@ ffplay -rtsp_transport tcp rtsp://X.X.X.X/live/ch00_1
 
 Reemplazar `X.X.X.X` por la dirección IP de la cámara.
 
+En caso de que no se pueda acceder al puerto RTSP, se puede habilitar mediante [un patch y un archivo de configuración](https://blog.caller.xyz/v380-ipcam-firmware-patching/#prelude).
+
 ### ONVIF
 
 La cámara expone via gSOAP los servicios ONVIF en el puerto 8899.
 
 Los servicios más interesantes son _obtener el stream de video_ y _mover la cámara_ (PTZ).
 
-Según [blog.caller.xyz](https://blog.caller.xyz/v380-ipcam-move-with-soap/) los servicios disponibles son:
+En [blog.caller.xyz](https://blog.caller.xyz/v380-ipcam-move-with-soap/) hay una lista de los métodos implementados.
 
-* ContinuousMove
-* GetAudioEncoderConfiguration
-* GetAudioEncoderConfigurations
-* GetAudioSourceConfiguration
-* GetAudioSourceConfigurations
-* GetAudioSources
-* GetCapabilities
-* GetConfiguration
-* GetConfigurationOptions
-* GetConfigurations
-* GetDeviceInformation
-* GetOptions
-* GetProfile
-* GetProfiles
-* GetServices
-* GetStreamUri
-* GetSystemDateAndTime
-* GetVideoEncoderConfiguration
-* GetVideoEncoderConfigurationOptions
-* GetVideoEncoderConfigurations
-* GetVideoSourceConfiguration
-* GetVideoSourceConfigurations
-* GetVideoSources
-* SetVideoEncoderConfiguration
-* Stop
-
-Por ejemplo para mover la camara se pueden usar estos dos comandos cURL:
+Por ejemplo para mover (y detener) la camara se pueden usar estos dos comandos cURL:
 
 ```bash
 curl http://X.X.X.X:8899/ \
@@ -86,15 +62,27 @@ curl http://X.X.X.X:8899/ \
 
 Reemplazar `X.X.X.X` por la dirección IP de la cámara.
 
-Los WSDL de los servicios ONVIF están disponibles en la cámara en la URL `http://X.X.X.X:8899/onvif/device_service`.
+## Recursos Útiles
 
-## Recursos
+### Artículos
 
 - https://ricardojlrufino.wordpress.com/2022/02/14/hack-ipcam-anyka-teardown-and-root-access/
-- https://gitea.raspiweb.com/Gerge/Anyka_ak3918_hacking_journey
-- [SecTalks London 0x11 - Introduction to Hardware Hacking](docs/SecTalks_London_0x11-Hardware_Workshop.pdf)
 
-### Techical Documentation
+- Explora diferentes maneras de reemplazar el software de una cámara Anyka AK3918:
+
+  https://gitea.raspiweb.com/Gerge/Anyka_ak3918_hacking_journey
+
+- Presentación donde analizan la cámara V380, su firmware y como hackearla:
+
+  [SecTalks London 0x11 - Introduction to Hardware Hacking](docs/SecTalks_London_0x11-Hardware_Workshop.pdf)
+
+- Agrega una interfaz web a las cámaras V380:
+
+  https://github.com/Arkady23/V380-Web
+
+- [Reverse Engineering cheap chinese “VRCAM” protocol](https://lucasteske.medium.com/reverse-engineering-cheap-chinese-vrcam-protocol-515c37a9c954)
+
+### Technical Documentation
 
 - [AK3918 HD IP Camera SoC Specification](docs/AK3918_HD_IP_Camera_SoC-specs.pdf)
 - [H155E-U Wi-Fi Single-band 1x1 802.11b/g/n USB Module Datasheet](docs/H155E-U_SV6155P_wifi-module-specs.pdf)
@@ -102,4 +90,3 @@ Los WSDL de los servicios ONVIF están disponibles en la cámara en la URL `http
 ### Firmware
 
 - [https://github.com/MuhammedKalkan/Anyka-Camera-Firmware](https://github.com/MuhammedKalkan/Anyka-Camera-Firmware)
-- 
